@@ -13,8 +13,15 @@ atari:
   vf_coef: 0.5
   ent_coef: 0.01
 
+PandaPickAndPlace-v1: 
+  env_wrapper: sb3_contrib.common.wrappers.TimeFeatureWrapper
+  n_timesteps: !!float 1e6
+  policy: 'MultiInputPolicy'
+  learning_rate: !!float 1e-3
+  n_envs: 150
+
 # Tuned
-Pendulum-v1:
+Pendulum-v0:
   n_envs: 4
   n_timesteps: !!float 1e5
   policy: 'MlpPolicy'

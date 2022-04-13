@@ -6,7 +6,7 @@ CartPole-v1:
   n_delta: 2
 
 # Tuned
-Pendulum-v1: &pendulum-params
+Pendulum-v0: &pendulum-params
   n_envs: 1
   n_timesteps: !!float 2e6
   policy: 'MlpPolicy'
@@ -24,6 +24,8 @@ LunarLander-v2:
   n_delta: 6
   n_top: 1
   n_timesteps: !!float 2e6
+
+
 
 # Tuned
 LunarLanderContinuous-v2:

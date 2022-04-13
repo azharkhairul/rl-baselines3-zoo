@@ -6,13 +6,114 @@ from functools import wraps
 from threading import Thread
 from typing import Optional
 
+from math import gamma
+from typing import Any, Dict
+import panda_gym
+from sb3_contrib import TQC
+from stable_baselines3.common.vec_env import SubprocVecEnv
+from stable_baselines3.common.callbacks import BaseCallback
+from stable_baselines3.common.evaluation import evaluate_policy
+from stable_baselines3.common.logger import Video
+from stable_baselines3.common.env_util import make_vec_env
+from sb3_contrib.common.wrappers import TimeFeatureWrapper
+from stable_baselines3 import HerReplayBuffer
+
+import gym
+import torch as th
 import optuna
 from sb3_contrib import TQC
 from stable_baselines3 import SAC
-from stable_baselines3.common.callbacks import BaseCallback, EvalCallback
-from stable_baselines3.common.logger import TensorBoardOutputFormat
+from stable_baselines3.common.callbacks import BaseCallback, EvalCallback, CallbackList
 from stable_baselines3.common.vec_env import VecEnv
 
+import wandb
+from wandb.integration.sb3 import WandbCallback
+
+
+   
+
+class wandFake:
+    config = {
+        "policy_type": "MultiInputPolicy",
+        "total_timesteps": int(1.7e6),
+        "env": "PandaPickAndPlace-v1",
+        "seed":int(117454387) , 
+        "tensorboard_log":"model_log/tqc_dense2sparse_rew", 
+        "verbose":1, 
+        "batch_size": 2048, 
+        "buffer_size": 1000000, 
+        "gamma": 0.95, 
+        "learning_rate": 0.001, 
+        "num-threads": 1,
+        "policy_kwargs": dict(net_arch=[512, 512, 512], n_critics=2), 
+        "replay_buffer_class": "HerReplayBuffer",
+        "callback": "VideoRecorderCallback & WandBCallback",
+        "tau": 0.05,  
+        "replay_buffer_kwargs": dict( online_sampling=True, goal_selection_strategy='future', n_sampled_goal=4),
+    }
+    run = wandb.init(
+        project="TQC",
+        notes="Dense2Sparse",
+        tags=["D2S", "50k", "rl-baseline-zoo"],
+        config=config,
+        sync_tensorboard=True,  # auto-upload sb3's tensorboard metrics
+        monitor_gym=True,  # auto-upload the videos of agents playing the game
+        save_code=True,  # optional
+        entity="panda_pandp_rew_engineering"
+    )
+    
+class wandb:
+    WandbCallback(model_save_path="models/run_1", verbose=1, model_save_freq=100000) 
+    
+      
+
+class VideoRecorderCallback(BaseCallback):
+    def __init__(self, eval_env:gym.Env = gym.make("PandaPickAndPlace-v1") , render_freq: int = 50000, n_eval_episodes: int = 5, deterministic: bool = True):
+        """
+        Records a video of an agent's trajectory traversing ``eval_env`` and logs it to TensorBoard
+
+        :param eval_env: A gym environment from which the trajectory is recorded
+        :param render_freq: Render the agent's trajectory every eval_freq call of the callback.
+        :param n_eval_episodes: Number of episodes to render
+        :param deterministic: Whether to use deterministic or stochastic policy
+        """
+        super().__init__()
+        self._eval_env = eval_env
+        self._render_freq = render_freq
+        self._n_eval_episodes = n_eval_episodes
+        self._deterministic = deterministic
+
+    def _on_step(self) -> bool:
+        if self.n_calls % self._render_freq == 0:
+            screens = []
+
+            def grab_screens(_locals: Dict[str, Any], _globals: Dict[str, Any]) -> None:
+                """
+                Renders the environment in its current state, recording the screen in the captured `screens` list
+
+                :param _locals: A dictionary containing all local variables of the callback's scope
+                :param _globals: A dictionary containing all global variables of the callback's scope
+                """
+                screen = self._eval_env.render(mode="rgb_array")
+                # PyTorch uses CxHxW vs HxWxC gym (and tensorflow) image convention
+                screens.append(screen.transpose(2, 0, 1))
+
+            evaluate_policy(
+                self.model,
+                self._eval_env,
+                callback=grab_screens,
+                n_eval_episodes=self._n_eval_episodes,
+                deterministic=self._deterministic,
+            )
+            self.logger.record(
+                "trajectory/video",
+                Video(th.ByteTensor([screens]), fps=30),
+                exclude=("stdout", "log", "json", "csv"),
+            )
+        return True
+
+class calllbbbaaacckkklliiiissttt:
+    CallbackList([wandFake, VideoRecorderCallback])
 
 class TrialEvalCallback(EvalCallback):
     """
@@ -194,36 +295,3 @@ class ParallelTrainCallback(BaseCallback):
             if self.verbose > 0:
                 print("Waiting for training thread to terminate")
             self.process.join()
-
-
-class RawStatisticsCallback(BaseCallback):
-    """
-    Callback used for logging raw episode data (return and episode length).
-    """
-
-    def __init__(self, verbose=0):
-        super(RawStatisticsCallback, self).__init__(verbose)
-        # Custom counter to reports stats
-        # (and avoid reporting multiple values for the same step)
-        self._timesteps_counter = 0
-        self._tensorboard_writer = None
-
-    def _init_callback(self) -> None:
-        # Retrieve tensorboard writer to not flood the logger output
-        for out_format in self.logger.output_formats:
-            if isinstance(out_format, TensorBoardOutputFormat):
-                self._tensorboard_writer = out_format
-        assert self._tensorboard_writer is not None, "You must activate tensorboard logging when using RawStatisticsCallback"
-
-    def _on_step(self) -> bool:
-        for info in self.locals["infos"]:
-            if "episode" in info:
-                logger_dict = {
-                    "raw/rollouts/episodic_return": info["episode"]["r"],
-                    "raw/rollouts/episodic_length": info["episode"]["l"],
-                }
-                exclude_dict = {key: None for key in logger_dict.keys()}
-                self._timesteps_counter += info["episode"]["l"]
-                self._tensorboard_writer.write(logger_dict, exclude_dict, self._timesteps_counter)
-
-        return True

@@ -31,4 +31,4 @@ except ImportError:
 try:
     import panda_gym  # pytype: disable=import-error
 except ImportError:
-    panda_gym = None
+    panda_gym = PandaPickAndPlace-v2
