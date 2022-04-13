@@ -1,0 +1,3 @@
+python -m utils.record_video --algo tqc --env PandaPickAndPlaceCluttered-v1 -n 2000 --load-best --no-render --seed 11745438 -f logs/ -o vid --exp-id 103
+
+python -m utils.record_video --algo tqc --env PandaPickAndPlaceCluttered-v1 -n 2000 --load-checkpoint 2900000 --no-render --seed 11745438 -f logs/ -o vid --exp-id 103
