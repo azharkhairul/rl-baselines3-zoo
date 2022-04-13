@@ -15,3 +15,12 @@ git_rewrite_commit_history.sh
 .vscode/
 wandb
 runs
+model_log/tqc_cluttered_sparse_video_log/TQC_7/events.out.tfevents.1646083765.asterion.8312.0
+model_log/tqc_dense2sparse_87k/PandaPickAndPlace-v1/TQC_2/events.out.tfevents.1648215145.asterion.986.0
+model_log/tqc_mistake_const_rew/PandaPickAndPlace-v1/TQC_2/events.out.tfevents.1645573018.asterion.42461.0
+model_log/tqc_mod_const_rew/PandaPickAndPlace-v1/TQC_1/events.out.tfevents.1645740334.asterion.11818.0
+model_log/tqc_original_rew/PandaPickAndPlace-v1/TQC_1/events.out.tfevents.1647252309.asterion.12557.0
+model_log/tqc_original_size_video_log/TQC_1/events.out.tfevents.1646263870.asterion.8071.0
+model_log/tqc_original_sparse_goal/PandaPickAndPlace-v1/TQC_1/events.out.tfevents.1649366147.asterion.35914.0
+model_log/tqc_rand_size_video_log/TQC_5/events.out.tfevents.1646217536.asterion.40638.0
+model_log/tqc_vidd/TQC_1/events.out.tfevents.1648201092.asterion.23049.0
