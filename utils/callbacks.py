@@ -53,7 +53,7 @@ class wandFake:
     }
     run = wandb.init(
         project="TQC",
-        notes="Dense2Sparse",
+        notes="Cluttered",
         tags=["D2S", "50k", "rl-baseline-zoo"],
         config=config,
         sync_tensorboard=True,  # auto-upload sb3's tensorboard metrics

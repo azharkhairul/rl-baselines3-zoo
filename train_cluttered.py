@@ -24,9 +24,8 @@ config = {
         "code": "rl-baseline-zoo",
         "policy_type": "MultiInputPolicy",
         "total_timesteps": int(1.7e6),
-        "env": "PandaPickAndPlace-v1",
+        "env": "PandaPickAndPlaceCluttered-v1",
         "seed":int(117454387) , 
-        "tensorboard_log":"model_log/tqc_dense2sparse_rew", 
         "verbose":1, 
         "batch_size": 2048, 
         "buffer_size": 1000000, 
@@ -41,9 +40,9 @@ config = {
     
     }
 run = wandb.init(
-        project="TQC",
-        notes="Dense2Sparse Reward",
-        tags=["Literrally Dense","100k","original dense", "rl-baseline-zoo"],
+        project="Cluttered Scene",
+        notes="Cluttered",
+        tags=["forgot to put tag"],
         config=config,
         sync_tensorboard=True,  # auto-upload sb3's tensorboard metrics
         monitor_gym=True,  # auto-upload the videos of agents playing the game
