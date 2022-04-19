@@ -32,38 +32,38 @@ from wandb.integration.sb3 import WandbCallback
 
    
 
-class wandFake:
-    config = {
-        "policy_type": "MultiInputPolicy",
-        "total_timesteps": int(1.7e6),
-        "env": "PandaPickAndPlace-v1",
-        "seed":int(117454387) , 
-        "tensorboard_log":"model_log/tqc_dense2sparse_rew", 
-        "verbose":1, 
-        "batch_size": 2048, 
-        "buffer_size": 1000000, 
-        "gamma": 0.95, 
-        "learning_rate": 0.001, 
-        "num-threads": 1,
-        "policy_kwargs": dict(net_arch=[512, 512, 512], n_critics=2), 
-        "replay_buffer_class": "HerReplayBuffer",
-        "callback": "VideoRecorderCallback & WandBCallback",
-        "tau": 0.05,  
-        "replay_buffer_kwargs": dict( online_sampling=True, goal_selection_strategy='future', n_sampled_goal=4),
-    }
-    run = wandb.init(
-        project="TQC",
-        notes="Cluttered",
-        tags=["D2S", "50k", "rl-baseline-zoo"],
-        config=config,
-        sync_tensorboard=True,  # auto-upload sb3's tensorboard metrics
-        monitor_gym=True,  # auto-upload the videos of agents playing the game
-        save_code=True,  # optional
-        entity="panda_pandp_rew_engineering"
-    )
+# class wandFake:
+#     config = {
+#         "policy_type": "MultiInputPolicy",
+#         "total_timesteps": int(1.7e6),
+#         "env": "PandaPickAndPlace-v1",
+#         "seed":int(117454387) , 
+#         "tensorboard_log":"model_log/tqc_dense2sparse_rew", 
+#         "verbose":1, 
+#         "batch_size": 2048, 
+#         "buffer_size": 1000000, 
+#         "gamma": 0.95, 
+#         "learning_rate": 0.001, 
+#         "num-threads": 1,
+#         "policy_kwargs": dict(net_arch=[512, 512, 512], n_critics=2), 
+#         "replay_buffer_class": "HerReplayBuffer",
+#         "callback": "VideoRecorderCallback & WandBCallback",
+#         "tau": 0.05,  
+#         "replay_buffer_kwargs": dict( online_sampling=True, goal_selection_strategy='future', n_sampled_goal=4),
+#     }
+#     run = wandb.init(
+#         project="TQC",
+#         notes="Cluttered",
+#         tags=["D2S", "50k", "rl-baseline-zoo"],
+#         config=config,
+#         sync_tensorboard=True,  # auto-upload sb3's tensorboard metrics
+#         monitor_gym=True,  # auto-upload the videos of agents playing the game
+#         save_code=True,  # optional
+#         entity="panda_pandp_rew_engineering"
+#     )
     
-class wandb:
-    WandbCallback(model_save_path="models/run_1", verbose=1, model_save_freq=100000) 
+# class wandb:
+#     WandbCallback(model_save_path="models/run_1", verbose=1, model_save_freq=100000) 
     
       
 
@@ -112,8 +112,8 @@ class VideoRecorderCallback(BaseCallback):
             )
         return True
 
-class calllbbbaaacckkklliiiissttt:
-    CallbackList([wandFake, VideoRecorderCallback])
+# class calllbbbaaacclliiiissttt:
+#     CallbackList([wandFake, VideoRecorderCallback])
 
 class TrialEvalCallback(EvalCallback):
     """
