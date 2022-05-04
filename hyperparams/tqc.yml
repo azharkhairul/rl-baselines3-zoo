@@ -234,7 +234,8 @@ PandaSlide-v1:
   n_timesteps: !!float 3e6
 PandaPickAndPlaceClutteredMoreObj-v1:
   <<: *her-defaults
-
+PandaPickAndPlaceBarrier-v1:
+  <<: *her-defaults
 PandaPickAndPlaceCluttered-v1:
   <<: *her-defaults
 PandaPickAndPlace-v1:
